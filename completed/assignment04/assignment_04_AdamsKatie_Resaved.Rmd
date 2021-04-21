@@ -1,0 +1,84 @@
+---
+title: "ASSIGNMENT 4"
+author: "Katie Adams"
+date: '2010-04-18'
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+bibliography: bibliography.bib
+---
+
+# Markdown Basics
+
+## Favorite Foods
+1. Raspberries
+2. Apples
+3. Peaches
+
+## Images
+![All Cases (Log Plot)](C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/completed/assignment04/plots/10-all-cases-log.png)
+
+## Add a Quote
+> O Romeo, Romeo, wherefore art thou Romeo?
+
+## Add an Equation
+$\[x^n + y^n = z^n \]
+
+## Add a Footnote
+
+^[This is a footnote.]
+
+## Add Citations
+
+- R for Everyone [@lander2014r]
+
+- Discovering Statistics Using R [@field2012discovering]
+
+# Inline Code
+```{r, include = false}
+library(ggplot2)
+library(tidyverse)
+```
+
+## NY Times COVID-19 
+```{r, echo = FALSE}
+
+#Used the whole usstate.csv file for Covid-19 data
+setwd("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520")
+usstates_df <- read.csv("data/nytimes/covid-19-data/usstates.csv")
+
+california_df <- usstates_df %>% filter(state=="California")
+florida_df <- usstates_df %>% filter(state=="Florida")
+ny_df <- usstates_df %>% filter(state=="New York")
+
+all_df <- rbind(california_df, florida_df, ny_df)
+
+log_cases <- log10(all_df$cases+1)
+
+all_df <- cbind(all_df, log_cases)
+
+COVID <- ggplot(all_df, aes(x=date, y= log_cases, col=state))
+
+COVID+geom_path(group=1)
+```
+
+## R4DS Height vs Earnings
+```{r, echo = FALSE}
+ggplot(heights_df, aes(x=height, y=earn, col=sex)) + geom_point() + ggtitle("Height vs. Earnings") + xlab("Height (Inches)") + ylab("Earnings (Dollars)")
+```
+# Tables
+
+## Knitr Table with Kable
+```{r, echo = FALSE}
+library(knitr)
+kable(characters_df, caption = "One Ring To Rule Them All")
+```
+## Pandoc Table
+```{r, echo = FALSE}
+colnames(characters_df) <- c("Name", "Race", "In Fellowship", "Ring Bearer", "Age")
+library(pander)
+pander(characters_df
+```
+
+# References
