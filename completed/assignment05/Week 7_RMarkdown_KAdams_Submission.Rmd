@@ -1,0 +1,121 @@
+---
+title: "Week 7 Assignment"
+author: "Katie Adams"
+date: "24/04/2021"
+output:
+  
+  pdf_document: default
+bibliography: C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/assignments/assignment04/bibliography.bib
+---
+
+# Assignment05
+1. Using `cor()` compute correclation coefficients for:
+```{r, include=TRUE}
+## Set the working directory to the root of your DSC 520 directory
+setwd("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520")
+
+## Load the `data/r4ds/heights.csv` and assign a variable
+heights_df <- read.csv("data/r4ds/heights.csv")
+```
+- height vs. earn: 0.2418481
+```{r, echo=TRUE}
+cor(heights_df[,c(1:2)])
+```
+- age vs. earn: 0.08100297
+```{r, echo=TRUE}
+cor(heights_df[,c(1,5)])
+```
+- ed vs. earn: 0.3399765
+```{r, echo=TRUE}
+cor(heights_df[,c(1,4)])
+```
+
+2. Spurious correlation: The following is data on US spending on science, space, and technology in millions of today's dollars and Suicides by hanging strangulation and suffocation for the years 1999 to 2009. Compute the correlation between these variables: tech_spending <- c(18079, 18594, 19753, 20734, 20831, 23029, 23597, 23584, 25525, 27731, 29449) and suicides <- c(5427, 5688, 6198, 6462, 6635, 7336, 7248, 7491, 8161, 8578, 9000)
+- Correlation:
+```{r, echo = TRUE}
+tech_spending <- c(18079, 18594, 19753, 20734, 20831, 23029, 23597, 23584, 25525, 27731, 29449)
+suicides <- c(5427, 5688, 6198, 6462, 6635, 7336, 7248, 7491, 8161, 8578, 9000)
+cor(tech_spending, suicides)
+```
+
+# Student Survey
+1. As a data science intern with newly learned knowledge in skills in statistical correlation and R programming, you will analyze the results of a survey recently given to college students. You learn that the research question being investigated is: “Is there a significant relationship between the amount of time spent reading and the time spent watching television?” You are also interested if there are other significant relationships that can be discovered? The survey data is located in this StudentSurvey.csv file.
+
+2. Use R to calculate the covariance of the Survey variables and provide an explanation of why you would use this calculation and what the results indicate.
+- I would use this covariance calculation because it will show whether any 2 variables in the dataset covary and are therefore associated/related to each other, which will help answer the research question of if there is a significant relationship between the amount of time spent reading and watching TV. The results indicate the following: 
+-- TimeReading and TimeTV negatively covary (-20.36363636)
+-- TimeReading and Happiness negatively covary(-10.35009091)
+-- TimeReading and Gender negatively covary (-0.08181818)
+-- TimeTV and Happiness posivitely covary (114.37727273)
+-- TimeTV and Gender posivitely covary (0.04545455)
+-- Happiness and Gender posivitely covary (1.11663636)
+```{r, include=TRUE}
+### Set the working directory to the root of your DSC 520 directory
+setwd("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520")
+
+### Load the `data/student-survey.csv` and assign a variable
+survey_df <- read.csv("data/student-survey.csv")
+
+cov(survey_df)
+```
+
+3. Examine the Survey data variables. What measurement is being used for the variables? Explain what effect changing the measurement being used for the variables would have on the covariance calculation. Would this be a problem? Explain and provide a better alternative if needed.
+- The survey variables differ greatly in their measurement type, where TimeReading is in hours, TimeTV is in minutes, Happiness is numerical, and Gender is binary (0 or 1). If the variables' measurements were changed, the covariance calculation would not provide accurate covariance values to show that variables relatedness to each other, which would be a problem in answering our research question about the potential significant relationship between the amount of time spent reading and the time spent watching television. "The one problem with covariance as a measure of the relationship between variables and that is that is depends upon the scales of measurement used. So, covariance is not a standard measure...To overcome this problem of dependence on measurement of scale, we need to convert the covariance into a standard set of units. This process is known as standardization... The standardized covariance is known as a correlation coefficient..." (Field, 2012). So, for this research question, a better alternative to covariance is the correlation coefficient because the variables all have different units of measure.
+
+4. Choose the type of correlation test to perform, explain why you chose this test, and make a prediction if the test yields a positive or negative correlation?
+- The type of correlation test to perform is a Pearson's Correlation test because TimeReading and TimeTV are both in measurements of time (not ranked data) and are included in answering our research question “Is there a significant relationship between the amount of time spent reading and the time spent watching television?”. I predict that it will yield a negative correlation.
+
+5. Perform a correlation analysis of:
+- All variables:
+```{r, include = TRUE}
+library(Hmisc)
+```
+```{r, echo= TRUE}
+rcorr(as.matrix(survey_df[,c("TimeReading", "TimeTV", "Happiness", "Gender")]))
+```
+- A single correlation between two a pair of the variables: 
+```{r, echo=TRUE}
+cor.test(survey_df$TimeTV, survey_df$TimeReading, use = "everything", method = "pearson")
+```
+- Repeat your correlation test in step 2 but set the confidence interval at 99%: 
+```{r, echo=TRUE}
+cor.test(survey_df$TimeTV, survey_df$TimeReading, use = "everything", method = "pearson", conf.level = 0.99)
+```
+- Describe what the calculations in the correlation matrix suggest about the relationship between the variables. Be specific with your explanation: The calculations in the correlation matrix, specifically the p-value and the correlation coefficient, suggest that TimeTV and TimeReading are significantly correlated because of the p-value 0.0003153 (which is less than the significance level alpha = 0.01 (1-.99CL=0.01)) and a correlation coefficient of -0.8830677. This means that the more you read the less you watch TV, and the less you read the more you watch TV. 
+
+6. Calculate the correlation coefficient and the coefficient of determination, describe what you conclude about the results.
+- Correlation Coefficient:
+```{r, echo=TRUE}
+###correlation coefficient
+cor(survey_df$TimeTV, survey_df$TimeReading, use = "everything", method = "pearson")
+```
+- Coefficient of Determination:
+```{r, echo=TRUE}
+###coefficient of determination
+cor(survey_df$TimeTV, survey_df$TimeReading, use = "everything", method = "pearson")^2
+```
+- Even though direct conclusions about causality from correlation is not possible, "we can take the correlation coefficient a step further by squaring it. The correlation coefficient squared (known as the coefficient of determination, R2), is a measure of the amount of variability in one variable that is shared by another." (Field, 2012). These two variables (TimeReading and TimeTV) had a correlation of -0.8830677 and so the value of R2 is 0.7798085, and this value tells us how much of the variability in TimeTV is shared by TimeReading. If we convert this R2 value into a percentage we can conclude that TimeTV shares 78.0% of the variability in the TimeReading. This leaves only 22% of the variability still to be accounted for by other variables. 
+
+7. Based on your analysis can you say that watching more TV caused students to read less? Explain.
+- Based on this analysis, we CAN say that watching TV and reading are correlated, specifically TimeReading and TimeTV are negatively correlated (as one variable increases the other decreases by a proportionate amount) with a correlation value of -0.8830677. We CANNOT say that one caused the other, "Considerable caution must be taken when interpreting correlation coefficients because they give no indication of the direction of causality.... This caution for two reasons: The third variable problem (In any correlation, causality between two variables cannot be assumed because there may be other measured or unmeasured variable affecting the results), and Direction of Causality (Correlation coefficients say nothing about which variable causes the other to change)." (Field, 2012). 
+
+8. Pick three variables and perform a partial correlation, documenting which variable you are “controlling”. Explain how this changes your interpretation and explanation of the results.
+- Happiness is the control variable. The output for the partial correlation of TimeReading and TimeTV controlling for Happiness shows that the partial correlation is -0.872945 which is fairly similiar to the correlation coefficient of -0.8830677 of TimeReading and TimeTV. Because of the partial correlation & correlation coefficient are so close/similiar, the original interpretation of the results does not change: TimeReading and TimeTV are negatively correlated (as one variable increases the other decreases by a proportionate amount).
+```{r, include=TRUE}
+library(ggm)
+```
+```{r, echo=TRUE}
+#Happiness is the control variable
+pcor(c("TimeReading", "TimeTV", "Happiness"), var(survey_df))
+pc <- pcor(c("TimeReading", "TimeTV", "Happiness"), var(survey_df))
+pc
+pc^2
+pcor.test(pc, 1, 11)
+```
+
+# Citations
+- R for Everyone [@lander2014r]
+
+- Discovering Statistics Using R [@field2012discovering]
+
+## References
