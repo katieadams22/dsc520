@@ -1,0 +1,104 @@
+---
+title: "Exercise 8.2: Assignment07"
+author: "Katie Adams"
+date: "25/04/2021"
+output: pdf_document
+---
+
+```{r, include=TRUE}
+library(tinytex)
+knitr::opts_chunk$set(echo = TRUE)
+
+## Load the `data/r4ds/heights.csv` and assign a variable
+heights_df <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/r4ds/heights.csv", header=TRUE)
+```
+
+## Assignment 07
+
+1. Fit a linear model
+```{r, include=TRUE}
+earn_lm <-  lm(earn ~ ., data = heights_df)
+earn_lm
+```
+2. View the summary of your model
+```{r, include=TRUE}
+summary(earn_lm)
+```
+3. Compute deviation 
+```{r, include=TRUE}
+mean_earn <- mean(heights_df$earn)
+mean_earn
+```
+4. SST: Corrected Sum of Squares Total
+```{r, include=TRUE}
+sst <- sum(anova(earn_lm)[1:6,2])
+```
+6. Residuals
+```{r, include=TRUE}
+residuals <- anova(earn_lm)[6,]
+```
+7. SSE: Sum of Squares for Error
+```{r, include=TRUE}
+sse <- anova(earn_lm)[6,2]
+```
+6. SSM: Corrected Sum of Squares for Model
+```{r, include=TRUE}
+ssm <- sst-sse #changed equation for easier running of different equations
+```
+8. R Squared
+```{r, include=TRUE}
+r_squared <- ssm/sst
+```
+9. Number of observations
+```{r, include=TRUE}
+n <- nrow(heights_df)
+```
+10. Number of regression paramaters
+```{r, include=TRUE}
+p <- 8
+```
+11. Corrected Degrees of Freedom for Model
+```{r, include=TRUE}
+dfm <- p-1
+```
+12. Degrees of Freedom for Error
+```{r, include=TRUE}
+dfe <- n-p
+```
+13. Corrected Degrees of Freedom Total:   DFT = n - 1
+```{r, include=TRUE}
+dft <- n-1
+```
+14. Mean of Squares for Model:   MSM = SSM / DFM
+```{r, include=TRUE}
+
+msm_age <- anova(earn_lm)[4,3]
+msm_height <- anova(earn_lm)[1,3]
+msm_sex <- anova(earn_lm)[2,3]
+msm_ed <- anova(earn_lm)[3,3]
+msm_race <- anova(earn_lm)[5,3]
+```
+15. Mean of Squares for Error:   MSE = SSE / DFE
+```{r, include=TRUE}
+mse <- anova(earn_lm)[6,3]
+```
+16. Mean of Squares Total:   MST = SST / DFT
+```{r, include=TRUE}
+mst <- sum(anova(earn_lm)[1:6,3])
+```
+17. F Statistic
+```{r, include=TRUE}
+f_score_age <- anova(earn_lm)[4,4]
+f_score_height <- anova(earn_lm)[1,4]
+f_score_sex <- anova(earn_lm)[2,4]
+f_score_ed <- anova(earn_lm)[3,4]
+f_score_race <- anova(earn_lm)[5,4]
+```
+18. Adjusted R Squared R2 = 1 - (1 - R2)(n - 1) / (n - p)
+```{r, include=TRUE}
+first_earn <- 1-r_squared
+second_earn <- dft
+third_earn <- dfe
+
+adjusted_r_squared <- 1 - ((first_earn*second_earn)/third_earn)
+```

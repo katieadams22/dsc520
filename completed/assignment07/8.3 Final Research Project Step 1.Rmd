@@ -1,0 +1,90 @@
+---
+title: "8.3 Final Project Step 1"
+author: "Katie Adams"
+date: "08/05/2021"
+output: pdf_document
+bibliography: C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/assignments/assignment04/bibliography.bib
+---
+
+```{r setup, include=FALSE}
+library(tinytex)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+### Identify a topic or a problem that you want to research.  Provide an introduction that explains the problem statement or topic you are addressing. Why would someone be interested in this?  How is it a data science problem? 
+1. In Major League Baseball (MLB), players are drafted and traded to professional teams at different yearly salaries, "The reported average salary of an MLB player is $4.38 million. However, the median income of $1.5 million tells a different story about the earnings of all players. The average gets distorted because of the large number of players with multimillion-dollar salaries. At the most recent count, 38 players are making above $20 million a year, and 125 players are pulling in more than $10 million." (Woodruff, 2018). In the 2011 movie "Moneyball", the real-life characters Billy Beane and Paul DePodesta "worked for the Oakland Athletics. While there, they literally changed the game of baseball. They didn't do it using a bat or glove, and they certainly didn't do it by throwing money at the issue; in fact, money was the issue. They didn't have enough of it, but they were still expected to keep up with teams that had much deeper pockets. This is where Statistics came riding down the hillside on a white horse to save the day." (Duckett, 2017). 
+2. This MLB problem is explained by statistician Paul DePodesta (played by actor Jonah Hill) in the movie "Moneyball", "There is an epidemic failure within the game to understand what is really happening. And this leads people who run Major League Baseball teams to misjudge their players and mismanage their teams. People who run ball clubs, they think in terms of buying players. Your goal shouldn't be to buy players, your goal should be to buy wins. And in order to buy wins, you need to buy runs. You're trying to replace Johnny Damon. The Boston Red Sox see Johnny Damon and they see a star who's worth seven and half million dollars a year. When I see Johnny Damon, what I see is... is... an imperfect understanding of where runs come from. The guy's got a great glove. He's a decent leadoff hitter. He can steal bases. But is he worth the seven and half million dollars a year that the Boston Red Sox are paying him? No. No. Baseball thinking is medieval. They are asking all the wrong questions." (Miller, 2011). In this, the problem is that Major League Baseball teams have a flawed assumption that buying (i.e. offering contracts) players who are perceived "better" (i.e. players like Johnny Damon) will buy the team more wins. When in actuality, buying runs (i.e. exclusively looking at the players who have historically made a high number of runs in comparison to other plays) will buy the team wins. Major League Baseball ballclubs (like the Oakland A's in "Moneyball") would be very interested in this so they can set themselves up for success: they can evaluate current and future potential players by number of historical game runs (specifically, on-base percentage, or OBP, and slugging percentage, SLG), trade any current players who don't make enough runs, offer contract salaries to new players based on their number of runs and not overspend on perceived "better" players, and ultimately win more. This is a data science problem because historical data can be used to predict which players will most likely make the most runs in a future season, and provide the MLB team with a better chance of winning. Statistical methods are used to extract knowledge and insights from structured MLB stats, and these insights are then applied strategically in forming a baseball team to ultimately win. This data science approach provides more and better insights to baseball team wins than the historical player recruiter approach of using intuition and past experience. 
+
+## Research Questions
+
+### Draft 5-10 Research questions that focus on the problem statement/topic
+1. How should an MLB team select its players to win more games?
+2. What historical MLB player and teams data should be considered when making player selections?
+3. How should an MLB team decide how much annual salary a player is offered?
+4. How does an MLB team make more runs to ultimately win more games?
+5. How does an MLB team win the World Series? 
+
+## Approach
+
+### Provide a concise explanation of how you plan to address this problem statement
+1. To address the problem statement that MLB teams have a flawed assumption that buying (i.e. offering contracts) players who are perceived "better" (i.e. players like Johnny Damon) will buy the team more wins, historical data will first be collected. This collection will include both historical player and overall team stats from the Major League Baseball and Baseball References websites from the last 5 seasons (2016-2020). Using this data, the historical player "run" data will analyzed in comparison to the historical team win data. Finally, the 2021 player data will be used to predict which team(s) have a better chance of winning more games, including the final World Series game in October 2021. 
+
+## How your Approach Addresses (fully or partially) the Problem
+
+### Discuss how your proposed approach will address (fully or partially) this problem
+1. Traditionally, baseball player "on base" stats have been largely ignored by MLB player recruiters, creating the problem of MLB teams buying perceived "better" players to get more wins. This approach outlined above will use baseball stats and data exclusively to evaluate, analyze, and predict which team(s) will win the most games in the 2021 season. This will directly address the problem statement in providing insights for improved player selection by MLB teams to obtain future game wins. 
+
+## Data (Minimum of 3 Datasets - but no requirement on number of fields or rows) 
+
+### Do some digging and find at least 3 datasets that you can use to address the issue (there is not a required number of fields or rows for these datasets). Include the original source where the data was obtained is cited and, if possible, hyperlink it. Source data is thoroughly explained (i.e. what was the original purpose of the data, when was it collected, how many variables did the original have, explain any peculiarities of the source data such as how missing values are recorded, or how data was imputed, etc.).
+
+#### The below datasets were derived from the MLB website Player Stats Hitting section. The original purpose of all these yearly MLB player datasets is to understand the performance of each player in comparison to each other. Each player dataset was collected in the year of the playing season (and collected by me in May 2021), and all have 18 variables. The data sources do have missing players' values from the seasons as only the players with at least 3.1 PA (Plate Appearance) are included, however no data is imputed with substitite values. 
+1. [2021 Player Dataset](https://www.mlb.com/stats/) 
+2. [2020 Player Dataset](https://www.mlb.com/stats/2020)
+3. [2019 Player Dataset](https://www.mlb.com/stats/2019)
+4. [2018 Player Dataset](https://www.mlb.com/stats/2018)
+5. [2017 Player Dataset](https://www.mlb.com/stats/2017)
+6. [2016 Player Dataset](https://www.mlb.com/stats/2016)
+
+#### The below datasets were derived from the MLB website Team Stats Pitching section. The original purpose of all these yearly MLB team datasets is to understand the performance of each team in comparison to each other. Each team dataset was collected in the year of the playing season (and collected by me in May 2021), and all have 21 variables. The data sources do not have missing team values as all teams played each season, and no data is imputed with substitite values. 
+1. [2020 Team Dataset](https://www.mlb.com/stats/team/pitching/2020?sortState=asc)
+2. [2019 Team Dataset](https://www.mlb.com/stats/team/pitching/2019?sortState=asc)
+3. [2018 Team Dataset](https://www.mlb.com/stats/team/pitching/2018?sortState=asc)
+4. [2017 Team Dataset](https://www.mlb.com/stats/team/pitching/2017?sortState=asc)
+5. [2016 Team Dataset](https://www.mlb.com/stats/team/pitching/2016?sortState=asc)
+
+## Required Packages
+
+### Identify the packages that are needed for your project
+1. Dplyr for data manipulation
+2. Ggplot2 for data visualization
+3. Knitr for dynamic report generation
+4. stats the R Stats Package
+5. tinytex for PDF R Markdown
+6. base for R Base Package functions
+
+## Plots and Table Needs
+
+### What types of plots and tables will help you to illustrate the ﬁndings to your research questions?
+1. Histogram
+2. Scatterplot
+3. Boxplot
+4. Line Chart
+5. Dot plot
+6. knitr table (kable function)
+7. pandoc table (pander function)
+
+## Questions for Future Steps
+
+### What do you not know how to do right now that you need to learn to answer your research questions?
+1. Right now, without analyzing the dataset, I don't know if more player runs equals more teamm wins, or if more player runs equals winning the biggest MLB game, the World Series. I need to learn if more player runs in the past means a higher probability of team wins in the future. 
+
+## References
+- Woodruff, J. (2018, June 29). How Much Money Do Baseball Players Make? Chron. 
+- Miller, B. (Director), Luca, D. M., Horovitz, R., &amp; Pitt, B. (Producers), &amp; Zaillian, S., Sorkin, A., &amp; Chervin, S. (Writers). (2011). Moneyball [Video file]. Retrieved 2021.
+- Duckett, W. (2017, October 19). Moneyball. Retrieved May 08, 2021, from https://www.kaggle.com/wduckett/moneyball-mlb-stats-19622012/data
+
+
+
