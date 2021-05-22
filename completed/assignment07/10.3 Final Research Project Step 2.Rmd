@@ -1,0 +1,180 @@
+---
+title: "10.3 Final Project Step 2"
+author: "Katie Adams"
+date: "08/05/2021"
+output: pdf_document
+bibliography: C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/assignments/assignment04/bibliography.bib
+---
+
+[Click here to view R Markdown file](TO ADD HYPERLINK ONCE FILE ADDED TO GITHUB)
+
+```{r setup, include=FALSE}
+library(tinytex) ## tinytex for PDF R Markdown
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# At this point you should have framed your problem/topic, described the data, and how you plan to solve the problem.  Now you need to move on to the next step of analyzing and preparing the data.
+```{r, include=TRUE}
+# Steps in Linear Regression:
+## Define the Problem
+## Import Libraries
+## Load the Datasets
+## Clean the Datasets
+## Explore the Datasets
+## Data Visualizations
+## Split Dataset into Train and Test Sets
+## Create the Model with Train Data
+## Prediction on Model with Test Data
+## Comparing Predicted vs Actual Values
+## Find Accuracy
+```
+# How to import and clean my data 
+## Data importing and cleaning steps are explained in the text and follow a logical process.  Outline your data preparation and cleansing steps.
+```{r, include=TRUE}
+## Define the Problem
+### Major League Baseball teams have a flawed assumption that buying (i.e. offering contracts) players who are perceived "better" (i.e. players like Johnny Damon) will buy the team more wins. When in actuality, buying runs (i.e. exclusively looking at the players who have historically made a high number of runs in comparison to other plays) will buy the team wins.
+
+## Import Libraries
+library(tidyverse)
+library(readr) ## Part of tidyverse package, but adding it specifically to show that readr will be used to read 
+library(dplyr) ## Part of tidyverse package, but adding it specifically to show that Dplyr will be used for data manipulation
+library(ggplot2) ## Part of tidyverse package, but adding it specifically to show that Ggplot2 will be used for data visualization
+library(stats) ## stats will be used to compute statistical data
+library(knitr) ## Knitr for dynamic report generation
+library(corrplot) ##corrplot for correlation matrix
+
+library(purrr) ## Part of tidyverse package, but adding it specifically to show that purrr will be used to work with any required functions and vectors
+library(stringr) ## Part of tidyverse package, but adding it specifically to show that stringr package will be used to work with any strings
+library(tidyr) ## Part of tidyverse package, but adding it specifically to show that tidyr will be used to tidy data
+
+
+## Load the Datasets
+### Load the `YEAR_MLB_TeamStandardBatting` datasets and assign variables
+df_bat_2020 <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/baseball/2020_MLB_TeamStandardBatting.csv", header=TRUE)
+df_bat_2019 <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/baseball/2019_MLB_TeamStandardBatting.csv", header=TRUE)
+df_bat_2018 <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/baseball/2018_MLB_TeamStandardBatting.csv", header=TRUE)
+df_bat_2017 <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/baseball/2017_MLB_TeamStandardBatting.csv", header=TRUE)
+df_bat_2016 <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/baseball/2016_MLB_TeamStandardBatting.csv", header=TRUE)
+
+### Combine the MLB Team Standard Batting dataframes to summarize the past 5 years in 1 dataframe
+df_bat_5years <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/baseball/MLB_TeamWins_2016_2020.csv", header=TRUE, fileEncoding="UTF-8-BOM")
+
+## Clean the Dataset
+### Changed column names to clarify what they are
+df_bat_5years <- df_bat_5years %>% rename(Team = Tm, Wins = W, AvgNumPlayers = X.Bat, AvgBatAge = BatAge)
+### Used mutate to add new variable Percentage Won which is total Wins/Games
+df_bat_5years <- df_bat_5years %>% mutate(PercWon = Wins/G)
+### Changed categorical columns to numeric, and made new dataframe to use with Correlation Matrix and Heatmap
+df_bat_5years_2 <-df_bat_5years %>% sapply(unclass)
+
+
+## Explore the Dataset
+### Check class of dataset
+class(df_bat_5years) 
+### Check number of rows & columns
+dim(df_bat_5years)
+### Changes the ordering of the rows by Wins and OBP
+arrange(df_bat_5years, Wins, OBP)
+### Filtered dataset by teams that had more than 400 wins over 5 years
+filter(df_bat_5years, Wins > 400)
+### Grouped the dataset by Team and summarized it by the mean of wins per team
+df_bat_5years %>% group_by(Team) %>% summarise(mean = mean(Wins)) 
+### Sliced the data to only look at the top 5 teams with the highest number of wins
+df_bat_5years %>% slice_max(Wins, n=5)
+### Sliced the data to only look at the top 5 teams with the lowest number of wins
+df_bat_5years %>% slice_min(Wins, n=5) 
+### Aggregated the mean of wins by OBP
+aggregate(Wins ~ OBP, df_bat_5years, mean)
+### Aggregated the mean of wins by OBP
+aggregate(Wins ~ SLG, df_bat_5years, mean)
+```
+# What does the final data set look like?
+## With a clean dataset, show what the final data set looks like. However, do not print off a data frame with 200+ rows; show me the data in the most condensed form possible.
+```{r, include=TRUE}
+head(df_bat_5years) #view top rows of the dataset
+summary(df_bat_5years) # View summary of statistics for all the columns for the dataframes
+```
+# Questions for future steps
+## What do you not know how to do right now that you need to learn to import and cleanup your dataset?
+- Right now, I do not know how to take the yearly dataframes (df_bat_2020-df_bat_2016), and combine them so that #Bat, BatAge, BA, OBP, SLG, and OPS are the average values from the past 5 years, and all the other columns are summations of the past 5 years. I know how to cbind and rbind, but they do not do what I need them to do - they both bind the data, but not sum or avg individual columns. To do this, I created a CSV file and did the 5 year summations and averages manually using the 2016-2020 datasets, and pointed it to the variable df_bat_5years. 
+
+# What information is not self-evident? 
+## Discuss how you plan to uncover new information in the data that is not self-evident.
+- To uncover new information about the data that is not self-evident, I plan to create a linear model using the number of Wins (W) column. From this model, I will use the summary function to understand the Median, Mean, Max, Y-intercept, Error, and any significant correlation between number of Wins and the other fields in the dataset. 
+
+# What are different ways you could look at this data to answer the questions you want to answer?
+- I could look at the data in terms of the correlation between Wins and the other columns. For example, the Oakland A's used OBP and SLG to predict # of wins. In this, we could look at the linear model summary to understand if there are strong correlations between number of wins and the other columns/fields, including OBP and SLG. 
+
+# How do you plan to slice and dice the data?
+## Do you plan to slice and dice the data in different ways, create new variables, or join separate data frames to create new summary information? Explain.
+- Yes, I plan to join seperate dataframes (df_bat_2020-df_bat_2016) to create a new total dataframe (df_bat_5years). I also plan to create a new column called "Percent of Games Won" which is (w/G)/100 - number of wins divided by the number of games, divided by 100 to make a percent. 
+
+# How could you summarize your data to answer key questions?
+- I could summarize the data using the Correlation Matrix to see which variables are more correlated to the number of Wins. This would help us solve the problem of Major League Baseball teams buying (i.e. offering contracts) players who are perceived "better" (i.e. players like Johnny Damon) will buy the team more wins, rather than looking to buy runs (i.e. exclusively looking at the players who have historically made a high number of runs in comparison to other plays) to ncrease team wins. Summarizing the data in a Correlation Matrix and then Heatmap will help us answer questions related to buying runs: which data fields (baseball team stats) are more highly correlated to more team wins? 
+
+# What types of plots and tables will help you to illustrate the findings to your questions?
+## Ensure that all graph plots have axis titles, legend if necessary, scales are appropriate, appropriate geoms used, etc.
+```{r, include=TRUE}
+## Data Visualization
+### Plot function to see the comparison of Total Wins by On Base Percentage and Slugging Percentage
+plot(Wins~OBP, data=df_bat_5years, xlab="Avg Team OBP", ylab="Total Wins", main="Number of Wins vs OBP Over 5 years")
+plot(Wins~SLG, data=df_bat_5years, xlab="Avg Team SLG", ylab="Total Wins", main="Number of Wins vs SLG Over 5 years")
+
+### Create a histogram of the data to visualize the overall distribution of Wins
+Wins_1620 <- ggplot(df_bat_5years, aes(x = Wins))
+Wins_1620 + geom_area(stat = "bin")
+Wins_1620 + geom_area(aes(fill = Team), stat ="bin", alpha=0.6) + theme_classic() + labs(title = "Number of Games Won by MLB Team from 2016-2020")
+
+### Create scatterplot of number of wins and OBP by Team over 5 years
+W_OBP_team <- ggplot(df_bat_5years, aes(x = Wins, y = OBP, color=Team)) 
+W_OBP_team + geom_point() + ggtitle("Number of Wins by OBP")
+
+### Create scatterplot of number of wins and SLG by Team over 5 years
+W_SLG_team <- ggplot(df_bat_5years, aes(x = Wins, y = SLG, color=Team)) 
+W_SLG_team + geom_point() + ggtitle("Number of Wins by SLG")
+
+### Create scatterplot & smooth line of number of wins and OBP over 5 years
+W_OBP <- ggplot(df_bat_5years, aes(x = Wins, y = OBP)) 
+W_OBP + geom_point() + geom_smooth(method = lm) + ggtitle("Number of Wins by OBP")
+
+### Create scatterplot & smooth line of number of wins and SLG over 5 years
+W_SLG <- ggplot(df_bat_5years, aes(x = Wins, y = SLG))
+W_SLG + geom_point() + geom_smooth(method = lm) + ggtitle("Number of Wins by SLG")
+
+### Create a boxplot of the data to visualize the median, along with the first, second and third quartiles and to spot outliers
+W_OBP + geom_boxplot()
+W_SLG + geom_boxplot()
+
+### Combine the boxplot with the Dot Plot
+W_OBP + geom_dotplot(binaxis = "y", stackdir = "center")
+W_SLG + geom_boxplot(binaxis = "y", stackdir = "center")
+
+### Combine scatterplot, boxplot, and dot pot together with Legend and Coloring
+W_OBP + geom_boxplot() + geom_dotplot(aes(color=Team, fill=Wins), binaxis = "y", stackdir = "center")
+W_SLG + geom_boxplot() + geom_dotplot(aes(color=Team, fill=Wins), binaxis = "y", stackdir = "center")
+
+### Build the Correlation Matrix
+#### Prepare the data
+df_bat_5years_CM <- df_bat_5years_2[, c(2:31)]
+#### Create the Correlation matrix
+cormat <- round(cor(df_bat_5years_CM),6)
+# Melt the correlation matrix
+require(reshape2)
+cormat <- melt(cormat)
+head(cormat)
+#### Create the Heatmap
+ggplot(cormat, aes(Var2, Var1, fill = value))+
+  geom_tile(color = "white")+
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab",
+   name="Pearson\nCorrelation") + # Change gradient color
+  theme_minimal()+ # minimal theme
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                  size = 12, hjust = 1))+
+ coord_fixed()
+```
+# Do you plan on incorporating any machine learning techniques to answer your research questions? Explain
+- Yes, I plan on incorporating the Machine Learning technique of linear regression as we are looking to understand what baseball team stat is directly correlated with more team wins. Linear regression is used to do predictive analysis, and in this case we would look to understand from it if the predictor variables do a good job in predicting the outcome (dependent) variable, which in this case is the number of Wins. The regression estimates will be used to explain the relationship between the dependent variable (number of wins) and the independent variables (the other columns in the dataframe except for Teams).
+
+# Questions for future steps: What do you not know how to do right now that you need to learn to answer your questions?
+- Right now, I do not know how to take the dataset and input it into a linear regression model, to then understand which variables would best predict the dependent variable (number of wins). I will look to complete this in Step 3 of our research paper. 
