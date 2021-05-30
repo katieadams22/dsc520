@@ -16,14 +16,18 @@ bibliography: C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/G
 library(tinytex) ## tinytex for PDF R Markdown
 library(formatR) ## formatR to wrap the text in the PDF
 library(tidyverse)
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE)
-
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
+```
+```{r,include=TRUE,message=FALSE,warning=FALSE}
 # Load the combined 2016-2020 MLB Team Standard Batting dataframes to summarize the past 5 years in 1 dataframe
 df_bat_5years <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/baseball/MLB_TeamWins_2016_2020.csv", header=TRUE, fileEncoding="UTF-8-BOM")
+
 # Changed column names to clarify what they are
 df_bat_5years <- df_bat_5years %>% rename(Team = Tm, Wins = W, AvgNumPlayers = X.Bat, AvgBatAge = BatAge)
+
 # Used mutate to add new variable Percentage Won which is total Wins/Games
 df_bat_5years <- df_bat_5years %>% mutate(PercWon = Wins/G)
+
 # Changed categorical columns to numeric, and made new dataframe to use with Correlation Matrix and Heatmap
 df_bat_5years_2 <-df_bat_5years %>% sapply(unclass)
 ```
