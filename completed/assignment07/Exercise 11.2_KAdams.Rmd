@@ -1,0 +1,353 @@
+---
+title: "Exercise 11.2"
+author: "Katie Adams"
+date: "29/05/2021"
+output: pdf_document
+---
+[Click here to view R Markdown file](ADD GITHUB LINK)
+
+```{r,include=TRUE, echo=FALSE,message=FALSE,warning=FALSE}
+library(tinytex) ## tinytex for PDF R Markdown
+library(formatR) ## formatR to wrap the text in the PDF
+library(tidyverse)
+library(magrittr)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
+```
+# These assignments are here to provide you with an introduction to the “Data Science” use for these tools. This is your future. It may seem confusing and weird right now but it hopefully seems far less so than earlier in the semester. Attempt these homework assignments. You will not be graded on your answer but on your approach. This should be a, “Where am I on learning this stuff” check. If you can’t get it done, please explain why. Include all of your answers in a R Markdown report. 
+
+## Introduction to Machine Learning
+### Regression algorithms are used to predict numeric quantity while classification algorithms predict categorical outcomes. A spam filter is an example use case for a classification algorithm. The input dataset is emails labeled as either spam (i.e. junk emails) or ham (i.e. good emails). The classification algorithm uses features extracted from the emails to learn which emails fall into which category.
+### In this problem, you will use the nearest neighbors algorithm to fit a model on two simplified datasets. The first dataset (found in binary-classifier-data.csv) contains three variables; label, x, and y. The label variable is either 0 or 1 and is the output we want to predict using the x and y variables (You worked with this dataset last week!). The second dataset (found in trinary-classifier-data.csv) is similar to the first dataset except that the label variable can be 0, 1, or 2.
+```{r, include=TRUE,warning=FALSE}
+## Load the `data/binary-classifier-data` and assign a variable
+binary_df <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/binary-classifier-data.csv", header=TRUE)
+## Load the `data/trinary-classifier-data` and assign a variable
+trinary_df <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/trinary-classifier-data.csv", header=TRUE)
+```
+### Note that in real-world datasets, your labels are usually not numbers, but text-based descriptions of the categories (e.g. spam or ham). In practice, you will encode categorical variables into numeric values.
+1. Plot the data from each dataset using a scatter plot.
+```{r, include=TRUE,warning=FALSE}
+binary_plot <- ggplot(binary_df, aes(x = x, y = y, color=label)) 
+binary_plot + geom_point() + ggtitle("Binary: X vs Y")
+
+trinary_plot <- ggplot(trinary_df, aes(x = x, y = y, color=label)) 
+trinary_plot + geom_point() + ggtitle("Trinary: X vs Y")
+```
+
+### The k nearest neighbors algorithm categorizes an input value by looking at the labels for the k nearest points and assigning a category based on the most common label. In this problem, you will determine which points are nearest by calculating the Euclidean distance between two points. As a refresher, the Euclidean distance between two points: d(p,q)= sqrt(p-q)^2
+
+### Fitting a model is when you use the input data to create a predictive model. There are various metrics you can use to determine how well your model fits the data. For this problem, you will focus on a single metric, accuracy. Accuracy is simply the percentage of how often the model predicts the correct result. If the model always predicts the correct result, it is 100% accurate. If the model always predicts the incorrect result, it is 0% accurate.
+4. Fit a k nearest neighbors’ model for each dataset for k=3, k=5, k=10, k=15, k=20, and k=25. Compute the accuracy of the resulting models for each value of k. Plot the results in a graph where the x-axis is the different values of k and the y-axis is the accuracy of the model.
+- k=3 accuracy is 0.1232158 in binary_df and 0.0488432 in trinary_df
+- k=5 accuracy is 0.1232158 in binary_df and 0.0488432 in trinary_df
+- k=10 accuracy is 0.1232158 in binary_df and 0.0488432 in trinary_df
+- k=15 accuracy is 0.1232158 in binary_df and 0.0488432 in trinary_df
+- k=20 accuracy is 0.1232158 in binary_df and 0.0488432 in trinary_df
+- k=25 accuracy is 0.1232158 in binary_df and 0.0488432 in trinary_df
+```{r, include=TRUE,warning=FALSE}
+## Load package class
+library(class)
+
+## Binary Dataset
+## Generate a random number that is 90% of the total number of rows in the dataset
+set.seed(23)
+ran_binary <- sample(1:nrow(binary_df), 0.9*nrow(binary_df))
+
+## Extract training set
+binary_train <- binary_df[ran_binary,]
+
+## Extract testing set
+binary_test <- binary_df[-ran_binary,]
+
+## Extract 5th column of the train dataset 
+binary_df_target_category <- binary_df[ran_binary,3]
+
+## Extract 5th column of the test dataset
+binary_df_test_category <- binary_df[-ran_binary,3]
+
+## k=3 
+## run knn function
+binary.3 <- knn(binary_train, binary_test,cl=binary_df_target_category,k=3)
+
+## create confusion matrix
+tab.binary.3 <- as.matrix(binary_df, binary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.binary.3)
+
+## k=5
+## run knn function
+binary.5 <- knn(binary_train, binary_test,cl=binary_df_target_category,k=5)
+
+## create confusion matrix
+tab.binary.5 <- as.matrix(binary_df, binary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.binary.5)
+## k=10
+## run knn function
+binary.10 <- knn(binary_train, binary_test,cl=binary_df_target_category,k=10)
+
+## create confusion matrix
+tab.binary.10 <- as.matrix(binary_df, binary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.binary.10)
+## k=15
+## run knn function
+binary.15 <- knn(binary_train, binary_test,cl=binary_df_target_category,k=15)
+
+## create confusion matrix
+tab.binary.15 <- as.matrix(binary_df, binary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.binary.15)
+## k=20
+## run knn function
+binary.20 <- knn(binary_train, binary_test,cl=binary_df_target_category,k=20)
+
+## create confusion matrix
+tab.binary.20 <- as.matrix(binary_df, binary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.binary.20)
+## k=25
+## run knn function
+binary.25 <- knn(binary_train, binary_test,cl=binary_df_target_category,k=25)
+
+## create confusion matrix
+tab.binary.25 <- as.matrix(binary_df, binary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.binary.25)
+## Trinary Dataset
+## Generate a random number that is 90% of the total number of rows in the dataset
+set.seed(23)
+ran_trinary <- sample(1:nrow(trinary_df), 0.9*nrow(trinary_df))
+
+## Extract training set
+trinary_train <- trinary_df[ran_trinary,]
+
+## Extract testing set
+trinary_test <- trinary_df[-ran_trinary,]
+
+## Extract 5th column of the train dataset 
+trinary_df_target_category <- trinary_df[ran_trinary,3]
+
+## Extract 5th column of the test dataset
+trinary_df_test_category <- trinary_df[-ran_trinary,3]
+## k=3
+## run knn function
+trinary.3 <- knn(trinary_train, trinary_test,cl=trinary_df_target_category,k=3)
+
+## create confusion matrix
+tab.trinary.3 <- as.matrix(trinary_df, trinary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.trinary.3)
+
+## k=5
+## run knn function
+trinary.5 <- knn(trinary_train, trinary_test,cl=trinary_df_target_category,k=5)
+
+## create confusion matrix
+tab.trinary.5 <- as.matrix(trinary_df, trinary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.trinary.5)
+## k=10
+## run knn function
+trinary.10 <- knn(trinary_train, trinary_test,cl=trinary_df_target_category,k=10)
+
+## create confusion matrix
+tab.trinary.10 <- as.matrix(trinary_df, trinary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.trinary.10)
+## k=15
+## run knn function
+trinary.15 <- knn(trinary_train, trinary_test,cl=trinary_df_target_category,k=15)
+
+## create confusion matrix
+tab.trinary.15 <- as.matrix(trinary_df, trinary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.trinary.15)
+## k=20
+## run knn function
+trinary.20 <- knn(trinary_train, trinary_test,cl=trinary_df_target_category,k=20)
+
+## create confusion matrix
+tab.trinary.20 <- as.matrix(trinary_df, trinary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.trinary.20)
+## k=25
+## run knn function
+trinary.25 <- knn(trinary_train, trinary_test,cl=trinary_df_target_category,k=25)
+
+## create confusion matrix
+tab.trinary.25 <- as.matrix(trinary_df, trinary_df_test_category)
+
+# Accuracy
+accuracy <- function(x){sum(diag(x)/sum(rowSums(x)))*100}
+accuracy(tab.trinary.25)
+```
+5. Looking back at the plots of the data, do you think a linear classifier would work well on these datasets?
+- Looking at the datasets a linear classifier wouldn't work well because a straight line cannot be drawn through the dataset to sepearate the binary or trinary cateogory. 
+6. How does the accuracy of your logistic regression classifier from last week compare?  Why is the accuracy different between these two methods?
+- In the last assignment, the accuracy is 49% (accuracy output is 0.4900618), and this week binary was 12.3% and trinary was 4.8%.
+- The accuracies differ between the two methods because last week we did using logistic regression and this week we are using clustering techniques. 
+
+## Clustering
+
+### Labeled data is not always available. For these types of datasets, you can use unsupervised algorithms to extract structure. The k-means clustering algorithm and the k nearest neighbor algorithm both use the Euclidean distance between points to group data points. The difference is the k-means clustering algorithm does not use labeled data.
+
+### In this problem, you will use the k-means clustering algorithm to look for patterns in an unlabeled dataset. The dataset for this problem is found at data/clustering-data.csv.
+```{r, include=TRUE,warning=FALSE}
+## Load the `data/clustering` and assign a variable
+clustering_df <- read.csv("C:/Users/kadams/OneDrive - Suncor Energy Inc/DSC Masters Program/GitHub/DSC520/Assignments/dsc520/data/clustering-data.csv", header=TRUE)
+```
+1. Plot the dataset using a scatter plot.
+```{r, include=TRUE,warning=FALSE}
+clustering_plot <- ggplot(clustering_df, aes(x = x, y = y)) 
+clustering_plot + geom_point() + ggtitle("Clustering: X vs Y")
+```
+2. Fit the dataset using the k-means algorithm from k=2 to k=12. Create a scatter plot of the resultant clusters for each value of k.
+```{r, include=TRUE,warning=FALSE}
+## Fit dataset using k-means algorithm from k=2 to 12
+library(factoextra)
+set.seed (20)
+clustering_clusters_2 <- kmeans(clustering_df, 2)
+clustering_clusters_3 <- kmeans(clustering_df, 3)
+clustering_clusters_4 <- kmeans(clustering_df, 4)
+clustering_clusters_5 <- kmeans(clustering_df, 5)
+clustering_clusters_6 <- kmeans(clustering_df, 6)
+clustering_clusters_7 <- kmeans(clustering_df, 7)
+clustering_clusters_8 <- kmeans(clustering_df, 8)
+clustering_clusters_9 <- kmeans(clustering_df, 9)
+clustering_clusters_10 <- kmeans(clustering_df, 10)
+clustering_clusters_11 <- kmeans(clustering_df, 11)
+clustering_clusters_12 <- kmeans(clustering_df, 12)
+
+## Create a scatterplot of the resultant clusters, 2-12
+fviz_cluster(clustering_clusters_2, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_3, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_4, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_5, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_6, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_7, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_8, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_9, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_10, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+
+fviz_cluster(clustering_clusters_11, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+fviz_cluster(clustering_clusters_12, data = clustering_df,
+             geom = "point",
+             ellipse.type = "convex",
+             ggtheme = theme_bw()
+             )
+```
+
+## As k-means is an unsupervised algorithm, you cannot compute the accuracy as there are no correct values to compare the output to. Instead, you will use the average distance from the center of each cluster as a measure of how well the model fits the data. To calculate this metric, simply compute the distance of each data point to the center of the cluster it is assigned to and take the average value of all of those distances.
+3. Calculate this average distance from the center of each cluster for each value of k and plot it as a line chart where k is the x-axis and the average distance is the y-axis.
+```{r, include=TRUE,warning=FALSE}
+# Calculate average distance from the center of each cluster (k=2 to 12)
+distance.2 <-get_dist(unlist(clustering_clusters_2[2]))
+plot(distance.2,type = "l")
+
+distance.3 <-get_dist(unlist(clustering_clusters_3[2]))
+plot(distance.3,type = "l")
+
+distance.4 <-get_dist(unlist(clustering_clusters_4[2]))
+plot(distance.4,type = "l")
+
+distance.5 <-get_dist(unlist(clustering_clusters_5[2]))
+plot(distance.5,type = "l")
+
+distance.6 <-get_dist(unlist(clustering_clusters_6[2]))
+plot(distance.6,type = "l")
+
+distance.7 <-get_dist(unlist(clustering_clusters_7[2]))
+plot(distance.7,type = "l")
+
+distance.8 <-get_dist(unlist(clustering_clusters_8[2]))
+plot(distance.8,type = "l")
+
+distance.9 <-get_dist(unlist(clustering_clusters_9[2]))
+plot(distance.9,type = "l")
+
+distance.10 <-get_dist(unlist(clustering_clusters_10[2]))
+plot(distance.10,type = "l")
+
+distance.11 <-get_dist(unlist(clustering_clusters_11[2]))
+plot(distance.11,type = "l")
+
+distance.12 <-get_dist(unlist(clustering_clusters_12[2]))
+plot(distance.12,type = "l")
+```
+4. One way of determining the “right” number of clusters is to look at the graph of k versus average distance and finding the “elbow point”. Looking at the graph you generated in the previous example, what is the elbow point for this dataset?
+- Looking at the plot, the Elbow point is at 3 or 4 clusters
+```{r, include=TRUE,warning=FALSE}
+# Elbow Method
+fviz_nbclust(clustering_df, kmeans, method = "wss")
+```
